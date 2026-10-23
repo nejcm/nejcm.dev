@@ -2,15 +2,14 @@ const email = '[your@email.com]';
 
 export const site = {
   name: 'Nejc',
-  title: 'Nejc — Software Developer',
-  bio: "Software developer. [One or two sentences about what you build, the problems you like solving, and what you're working on right now.]",
-  location: '[City, Country]',
-  role: '[Currently at — Company / Freelance]',
+  title: 'Nejc — Full-stack Developer',
+  bio: 'Making computers do stuff. Full-stack developer building web products, open-source software, and AI-powered tools.',
+  location: 'Asia',
+  role: 'Full-stack developer · Decidr AI Industries Ltd',
   email,
   links: [
     { label: 'GitHub', href: 'https://github.com/nejcm' },
-    { label: 'LinkedIn', href: 'https://www.linkedin.com/' },
+    { label: 'LinkedIn', href: 'https://www.linkedin.com/in/nejcm/' },
     { label: 'Email', href: `mailto:${email}` },
-    { label: 'Résumé', href: '#' },
   ],
 };
