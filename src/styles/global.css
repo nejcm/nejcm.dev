@@ -14,6 +14,8 @@
   --accent-text: #ffffff;
   --g0: #f6f7f8; --g1: #f0f1f3; --g2: #e9ebee; --g3: #e2e5e9; --g4: #d8dce1;
   --g5: #c9ced5; --g6: #b6bdc6; --g7: #a1a9b4; --g8: #8d96a2; --g9: #7a8390;
+  --h0: #f6f7f8; --h1: #eef0f2; --h2: #e4e7eb; --h3: #d8dce1; --h4: #c6ccd3;
+  --h5: #aeb6c0; --h6: #929ba7; --h7: #75808d; --h8: #5a6573; --h9: #3f4955;
   --mono: 'IBM Plex Mono', ui-monospace, monospace;
   --sans: 'IBM Plex Sans', system-ui, sans-serif;
   color-scheme: light;
@@ -30,6 +32,8 @@
   --accent-text: #09090b;
   --g0: #111214; --g1: #15171a; --g2: #1a1d21; --g3: #20242a; --g4: #272c33;
   --g5: #30363e; --g6: #3b424b; --g7: #48505a; --g8: #56606b; --g9: #66717d;
+  --h0: var(--g0); --h1: var(--g1); --h2: var(--g2); --h3: var(--g3); --h4: var(--g4);
+  --h5: var(--g5); --h6: var(--g6); --h7: var(--g7); --h8: var(--g8); --h9: var(--g9);
   color-scheme: dark;
 }
 

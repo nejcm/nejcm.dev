@@ -20,7 +20,7 @@ for (const canvas of document.querySelectorAll<HTMLCanvasElement>('canvas.post-h
 
   const readPalette = () => {
     const cs = getComputedStyle(document.documentElement);
-    palette = ascii ? [cs.getPropertyValue('--text-3')] : Array.from({ length: 10 }, (_, i) => cs.getPropertyValue(`--g${i}`));
+    palette = ascii ? [cs.getPropertyValue('--text-3')] : Array.from({ length: 10 }, (_, i) => cs.getPropertyValue(`--h${i}`));
   };
 
   const resize = () => {
