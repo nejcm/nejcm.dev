@@ -117,8 +117,8 @@ h2 { font-size: 26px; letter-spacing: -0.01em; }
 
 .site-footer { margin-top: -40px; padding: 18px 20px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 16px; font-size: 13px; color: var(--muted); }
 
-.hero { display: block; width: 100%; aspect-ratio: 16 / 6; border-bottom: 1px solid var(--border); font-family: var(--mono); }
-@media (max-width: 600px) { .hero { aspect-ratio: 16 / 9; } }
+.post-hero { display: block; width: 100%; aspect-ratio: 16 / 6; border-bottom: 1px solid var(--border); font-family: var(--mono); }
+@media (max-width: 600px) { .post-hero { aspect-ratio: 16 / 9; } }
 .prose { padding: 32px 20px; color: var(--text-2); }
 .prose > * + * { margin-top: 1em; }
 .prose h2, .prose h3 { color: var(--text); margin-top: 1.6em; }
@@ -135,3 +135,12 @@ h2 { font-size: 26px; letter-spacing: -0.01em; }
 .page-title { font-size: 32px; line-height: 1.15; letter-spacing: -0.02em; }
 .panel-head.pad { flex-direction: column; align-items: flex-start; }
 .card h3 { margin: 0; }
+
+.post-head { position: sticky; top: 0; z-index: 2; background: var(--panel); transition: padding 0.2s, gap 0.2s; }
+.post-head .page-title { transition: font-size 0.2s; }
+.post-head time { max-height: 2em; overflow: hidden; transition: max-height 0.2s, opacity 0.2s; }
+.post-head.stuck { flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; padding-block: 10px; }
+.post-head.stuck .page-title { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.post-head.stuck time { max-height: 0; opacity: 0; }
+.post-head.stuck .back-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+@media (prefers-reduced-motion: reduce) { .post-head, .post-head * { transition: none; } }

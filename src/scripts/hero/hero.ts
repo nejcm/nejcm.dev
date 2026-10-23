@@ -4,7 +4,7 @@ const RAMP = ' .:-=+*#%@';
 const MAX_CELLS = 3600;
 const FRAME_MS = 1000 / 30;
 
-for (const canvas of document.querySelectorAll<HTMLCanvasElement>('canvas.hero')) {
+for (const canvas of document.querySelectorAll<HTMLCanvasElement>('canvas.post-hero')) {
   const { scene = '', slug = '', style = 'pixel' } = canvas.dataset;
   const f = scenes[scene] ?? scenes.field;
   const seed = seedOf(slug);
