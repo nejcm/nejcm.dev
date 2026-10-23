@@ -7,40 +7,45 @@ hero:
   style: pixel
 ---
 
-An environment label, a feature flag override, and a performance reading belong next to the app they describe. They also need somewhere to live. Each needs a trigger, perhaps a panel, and a way to stay usable when the viewport gets narrow. That shared UI is the problem I wanted to solve with [dev-toolbar](https://github.com/nejcm/dev-toolbar).
+I wanted a dev toolbar after reading about the one Linear uses inside its app. In [their post about the design refresh](https://linear.app/now/behind-the-latest-design-refresh), they describe toggling feature flags from the toolbar to compare the refreshed interface with the previous version. They also describe a color tool inside it for adjusting design tokens. The useful part for me was the location: change something, then see the result in the app you're already working on.
 
-I built it as a React toolbar that hosts tools supplied by the application. The shell handles the bar, overflow, panels, and saved preferences. It doesn't decide what your environment is or which flag client you use. Those details belong to the app and its extensions.
+Their [StyleX migration post](https://linear.app/now/styling-linear-for-the-future-stylex) has another example. Their performance toolbar shows a styled-components CSS rule count for the current page. That's a tool specific to a piece of work, useful while that work is happening. It made me want somewhere to put tools like that in my own apps.
 
-That split matters more to me than the collection of tools shipped alongside it. If all you need is a build label and a couple of buttons, importing the shell shouldn't also bring in performance collectors.
+I wanted to build a generic version that other developers could drop into their apps too. That became [dev-toolbar](https://github.com/nejcm/dev-toolbar), a React toolbar that hosts tools you choose. The part I wanted to share was the bar, the panels, and the wiring around them. The tools themselves need to depend on the application.
 
-The package has zero runtime dependencies. React and `react-dom` are required peers, so this isn't a claim that it runs without React. The accessibility extension has an optional `axe-core` peer. I wanted that cost to be a choice you make when adding that tool, rather than something every consumer inherits.
+A feature flag control is a good example of that boundary. The toolbar can display a flag and let you override it, but your app knows where flags come from and how an override changes its behavior. I don't want adding a toolbar to mean adopting another flag service or replacing a tool you already use.
 
-The source follows the same boundary. `src/core` owns the toolbar, `src/ext` contains the extensions, and `src/runtime` contains measurement helpers such as ring buffers and a throttled store. Core imports neither the extensions nor the runtime helpers. A boundary test checks the source imports and the built module graph, since separate folders alone don't keep code out of a bundle.
+The package is a shell. It handles ordering, overflow on narrow viewports, one open panel at a time, and saved preferences. Metrics, environment information, flags, and the other first-party tools are opt-in extensions. Each has its own import path and bundle. Import none of them and you can fill the bar entirely with your own tools.
 
-Here is the [README's basic setup](https://github.com/nejcm/dev-toolbar#use), with the extension array created outside render:
+Even the command menu is an extension. Core collects commands; the menu provides a way to find and run them. I like that separation because it leaves room for an app that already has a command palette. You shouldn't need two just to use the toolbar.
+
+The [docs site](https://nejcm.github.io/dev-toolbar/) shows a starting setup with environment information and metrics. You create the extensions once, outside render, and pass the array to `DevToolbar`. Adding another tool means importing its factory and adding the result to that array. There isn't a preset collection you have to accept first.
+
+## Bring your own tools
+
+A custom extension is a plain object. It needs an ID and a label; the rendering slots are optional. Here's a small build-info tool using the same shape as the [extension contract example](https://nejcm.github.io/dev-toolbar/extension-contract.html):
 
 ```tsx
-import { DevToolbar } from "@nejcm/dev-toolbar";
-import { environment } from "@nejcm/dev-toolbar/ext/environment";
-import { metrics } from "@nejcm/dev-toolbar/ext/metrics";
+import type { DevToolbarExtension } from "@nejcm/dev-toolbar";
 
-const extensions = [environment({ context: { environment: "staging" } }), metrics()];
-
-export function Root() {
-  return (
-    <DevToolbar extensions={extensions}>
-      <App />
-    </DevToolbar>
-  );
-}
+const build: DevToolbarExtension = {
+  id: "build-info",
+  label: "Build",
+  compact: ({ openPanel }) => (
+    <button type="button" data-dtb-part="trigger" onClick={openPanel}>
+      {import.meta.env.VITE_COMMIT?.slice(0, 7) ?? "dev"}
+    </button>
+  ),
+  panel: () => <p>{import.meta.env.VITE_COMMIT ?? "Local build"}</p>,
+};
 ```
 
-The separate import paths are intentional. Environment information and metrics each arrive through an opt-in entry point. Leave them out and the shell can host only your own tools. Even the command menu is an extension; core aggregates commands without choosing how to display them.
+This example uses Vite's environment variables. Add `build` to the extensions array and the button opens its panel. There's no base class or registration service. If you only supply a panel, core can supply the labelled trigger too.
 
-An extension is a plain object with an ID, a label, and optional functions for its compact view, panel, or background work. There is no base class to extend. Keeping the objects outside render matters because they own state and lifecycle work. Recreating them during rendering can leave the displayed tool disconnected from the work it started.
+The object belongs at module scope because its identity owns its lifecycle. For background work, an extension can provide `start(api)`, with an abort signal for teardown and an optional cleanup function. It can also contribute commands and diagnostics. A label doesn't need all of that. A collector might.
 
-I also wanted the toolbar to fit an app that already server-renders. The children render unchanged on the server. The bar waits until the client mounts, then renders through a portal to `document.body`. It uses fixed positioning, so wrapping an app in `DevToolbar` doesn't add a layout box around its content. If the bar covers content you need to see, `DevToolbarInset` is available to reserve space.
+Bringing your own tools also means keeping tools someone else already wrote. The [embedding docs](https://nejcm.github.io/dev-toolbar/embedding.html) show a TanStack Query devtools panel hosted through the same contract. You supply the panel and its stylesheet. The toolbar supplies the trigger and panel hosting. Extensions render in the light DOM, so your existing styles can reach them; the optional kit provides controls if you want to match the first-party panels.
 
-There is a specific React Server Components detail worth keeping in mind. The built entries carry a `"use client"` directive, but extension factories such as `metrics()` must still be called in a client module. A server component can render the toolbar; it can't call a function exported by a client module. The [SSR docs](https://github.com/nejcm/dev-toolbar/blob/main/docs/ssr.md) show the wrapper for that setup.
+I kept the package at zero runtime dependencies, with React and `react-dom` as required peers. The accessibility extension uses `axe-core` as an optional peer. Those costs should follow the tools you choose.
 
-Production inclusion is another explicit choice. `enabled={false}` renders the children without starting the toolbar, but the imported code remains in the bundle. To exclude those bytes, use a dynamic import behind a build-time condition. The [recipe builder](https://nejcm.github.io/dev-toolbar/recipes) generates setups for Vite and the Next.js app router, including that production gate and the extensions you select.
+Deployment is your choice too. `enabled={false}` stops the toolbar from mounting but leaves its imports in the bundle. To exclude the code, put a dynamic import behind a build-time deployment condition. The README covers both approaches, including the staging trap: a staging deployment can still be a production build, so `NODE_ENV` alone may exclude the toolbar exactly where you wanted it available.
