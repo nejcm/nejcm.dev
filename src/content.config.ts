@@ -2,6 +2,8 @@ import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
 
+const httpsUrl = z.url({ protocol: /^https$/ });
+
 const projects = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/projects' }),
   schema: z.object({
@@ -10,10 +12,10 @@ const projects = defineCollection({
     tags: z.array(z.string()).default([]),
     featured: z.boolean().default(false),
     order: z.number().default(0),
-    url: z.url().optional(),
-    docs: z.url().optional(),
-    example: z.url().optional(),
-    repo: z.url().optional(),
+    url: httpsUrl.optional(),
+    docs: httpsUrl.optional(),
+    example: httpsUrl.optional(),
+    repo: httpsUrl.optional(),
   }),
 });
 
