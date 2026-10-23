@@ -7,7 +7,6 @@ import { getPosts, getProjects } from '../lib';
 
 const projects = (await getProjects()).filter((p) => p.data.featured).slice(0, 4);
 const posts = (await getPosts()).slice(0, 4);
-const links = [...site.links, { label: 'Email', href: `mailto:${site.email}` }];
 ---
 
 <Base>
@@ -21,7 +20,7 @@ const links = [...site.links, { label: 'Email', href: `mailto:${site.email}` }];
     </div>
     <div class="links">
       {
-        links.map((l) => (
+        site.links.map((l) => (
           <a href={l.href} rel={l.href.startsWith('http') ? 'me noopener' : undefined}>
             {l.label} <span aria-hidden="true">↗</span>
             {l.href.startsWith('http') && <span class="sr-only">(opens external site)</span>}
