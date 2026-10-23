@@ -1,0 +1,31 @@
+---
+title: "One source for my AI tool configs"
+description: "Why I built ULIS to generate native AI tool configs from one source tree, with a separate step to install them."
+date: 2026-10-23
+---
+
+AI coding tools each have their own idea of where configuration belongs and what it should look like. Claude Code uses Markdown agents with YAML frontmatter. Codex uses TOML agent files. An MCP server definition needs different output again. Sharing the intent of a config across tools still leaves you maintaining several versions of it.
+
+I built [ULIS](https://github.com/nejcm/ulis) to make that maintenance a generation step. The problem I wanted to solve was config drift. A shared instruction should have one place to edit, even if the tools that consume it expect different files. Keeping separate copies means every change also needs a check that the other copies still say the same thing.
+
+The source is a directory called `.ulis/` inside a project, or `~/.ulis/` for a personal baseline. Agents are Markdown files with frontmatter. Skills have a `SKILL.md` and can include supporting files. MCP servers live in `mcp.yaml`. These are ordinary files you can review and commit alongside the code they apply to.
+
+From there, ULIS parses the source, validates it, and passes the result to each platform generator. The generators write native files under `generated/<platform>/`. The coding tool reads its usual configuration after installation. ULIS runs when you want to regenerate or install it.
+
+One choice I care about is keeping build and install separate. `ulis build` produces files to inspect without deploying them to a tool's config directory. `ulis install` builds and then deploys. That distinction matters when the destination is a home directory full of settings you already use.
+
+This command comes straight from the repository's [CLI examples](https://github.com/nejcm/ulis/blob/master/docs/CLI.md#examples):
+
+```bash
+ulis build --source ./example
+```
+
+Run it from the ULIS checkout and it builds the included example source into `example/generated/`. You can compare the Claude and Codex outputs against the same agent definition before installing anything. It is also a way to look at what the compiler actually emits, rather than infer its behavior from a configuration reference.
+
+I kept platform differences explicit. An agent can have a shared prompt and a `platforms` section with different model settings for Claude and Codex. The example tester agent does exactly that. There is also a `raw/` directory for native fragments that the shared format doesn't express. Those fragments apply after generation and win on conflicting values. I don't want adding a tool-specific setting to depend on first expanding the common schema.
+
+Installation needs a different kind of care. Deleting an agent from the source should eventually remove its installed copy, but a tool's config folder can also contain things ULIS never wrote. Each platform root gets a `.ulis-manifest.json` recording managed paths. Later installs can prune tracked entries that are no longer generated while leaving untracked entries in place. A generated agent or skill with the same native name can still replace an untracked one, with a warning. Ownership tracking doesn't remove the need to inspect a change.
+
+The [recent install work](https://github.com/nejcm/ulis/commit/0fcc5d50b9) extends that cleanup to stale managed rules, commands, and instruction files. This is the part of configuration generation that needs attention after the initial conversion works. Otherwise an instruction removed from the source can keep affecting a tool through an old installed file.
+
+ULIS is still in active development. For global configuration, I recommend keeping the home-level tool configs under local Git, building first, and using `ulis install --backup` when installing over existing settings. That gives you generated files to review before installation and a copy of the previous configuration if you need to undo it.

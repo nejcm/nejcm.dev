@@ -1,0 +1,29 @@
+---
+title: "Market research I can come back and check"
+description: "Why I built market-bot around saved evidence, explicit gaps, and forecasts that can be scored."
+date: 2026-10-23
+---
+
+I built [market-bot](https://github.com/nejcm/market-bot) to turn public market data into research I can inspect later. The output is a report with sources, saved evidence, and predictions that can eventually be checked against observations. That last part matters to me. A plausible explanation of a market move is easy to accept when there is no record of what it predicted beforehand.
+
+The project is a Bun and TypeScript CLI. It collects equity or crypto data, passes evidence through model stages, and writes research artifacts to disk. Yahoo Finance supplies primary equity data; CoinGecko supplies primary crypto data. Other providers add evidence such as SEC filings, macro series, or options data. The persisted reports stay within a research-only boundary: they do not give buy or sell calls, position sizes, or execution instructions.
+
+I wanted the research to survive the process that produced it. Each run has a directory under `data/runs/<run-id>/`, with `report.json`, `report.md`, and the evidence and diagnostic artifacts for that run. Those files are canonical. The SQLite run index is a derived query layer, so an index problem does not make the saved research disappear.
+
+That distinction also affects writes. A run directory is staged and then published with an atomic rename. Readers should see a completed run rather than a directory halfway through being written. Failed final synthesis has its own artifacts, including `failure.json` and the rejected report, without publishing a validated report. I want to be able to inspect the failure using the evidence already collected.
+
+For a concrete example, this is the deep equity command from the README:
+
+```sh
+bun run src/cli.ts equity AAPL --deep
+```
+
+It needs a configured model provider. The deep path adds deterministic SEC, options, and peer evidence packets, plus additional model analysis. Optional provider credentials affect what evidence it can collect. A missing options token, for example, leaves an options evidence gap. It does not justify filling that section with model guesses. Deep runs also use more provider tokens and take longer than the default brief path, so the brief is the documented starting point.
+
+The other choice I care about is how a prediction becomes something the scorer can evaluate. Each prediction has a `measurableAs` expression in a small domain-specific language. Code parses that expression and renders the public claim from it. The model's separately authored claim is ignored. This keeps the sentence the reader sees tied to the event the scorer will actually resolve.
+
+Later, the `score` command resolves due predictions against public observations. The `calibration` command rebuilds the calibration summary. Probability has a specific meaning here: the chance that the parsed expression becomes true. Predictions are not a required amount of prose to fill. Their count is a soft target, and a report can disclose a shortfall rather than request another model pass just to produce more forecasts.
+
+The recent [forecasting design](https://github.com/nejcm/market-bot/blob/a5631a6da8/docs/adr/0003-forecasts-scoring-and-calibration.md) goes further and compares eligible model probabilities with a versioned forecast baseline. Missing baseline inputs leave a declared gap. There is also an explicit `not-yet-decidable` status when the comparison lacks enough evidence. I am building a way to measure these forecasts; that is not evidence that the model forecasts better.
+
+Missing data needs the same care as an accepted prediction. If a source refresh fails, stale cached content can remain in the raw audit record, but it does not become normalized current evidence. The report discloses the gap. That leaves a useful debugging distinction: I can check whether a conclusion lacked current inputs before changing the prompt. The project is still under active development, and its CLI, configuration, and output formats can change.

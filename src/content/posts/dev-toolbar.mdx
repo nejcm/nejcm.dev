@@ -1,0 +1,43 @@
+---
+title: "Why I built dev-toolbar"
+description: "A React developer toolbar with a small shell, zero runtime dependencies, and tools you choose to load."
+date: 2026-10-23
+---
+
+An environment label, a feature flag override, and a performance reading belong next to the app they describe. They also need somewhere to live. Each needs a trigger, perhaps a panel, and a way to stay usable when the viewport gets narrow. That shared UI is the problem I wanted to solve with [dev-toolbar](https://github.com/nejcm/dev-toolbar).
+
+I built it as a React toolbar that hosts tools supplied by the application. The shell handles the bar, overflow, panels, and saved preferences. It doesn't decide what your environment is or which flag client you use. Those details belong to the app and its extensions.
+
+That split matters more to me than the collection of tools shipped alongside it. If all you need is a build label and a couple of buttons, importing the shell shouldn't also bring in performance collectors.
+
+The package has zero runtime dependencies. React and `react-dom` are required peers, so this isn't a claim that it runs without React. The accessibility extension has an optional `axe-core` peer. I wanted that cost to be a choice you make when adding that tool, rather than something every consumer inherits.
+
+The source follows the same boundary. `src/core` owns the toolbar, `src/ext` contains the extensions, and `src/runtime` contains measurement helpers such as ring buffers and a throttled store. Core imports neither the extensions nor the runtime helpers. A boundary test checks the source imports and the built module graph, since separate folders alone don't keep code out of a bundle.
+
+Here is the [README's basic setup](https://github.com/nejcm/dev-toolbar#use), with the extension array created outside render:
+
+```tsx
+import { DevToolbar } from "@nejcm/dev-toolbar";
+import { environment } from "@nejcm/dev-toolbar/ext/environment";
+import { metrics } from "@nejcm/dev-toolbar/ext/metrics";
+
+const extensions = [environment({ context: { environment: "staging" } }), metrics()];
+
+export function Root() {
+  return (
+    <DevToolbar extensions={extensions}>
+      <App />
+    </DevToolbar>
+  );
+}
+```
+
+The separate import paths are intentional. Environment information and metrics each arrive through an opt-in entry point. Leave them out and the shell can host only your own tools. Even the command menu is an extension; core aggregates commands without choosing how to display them.
+
+An extension is a plain object with an ID, a label, and optional functions for its compact view, panel, or background work. There is no base class to extend. Keeping the objects outside render matters because they own state and lifecycle work. Recreating them during rendering can leave the displayed tool disconnected from the work it started.
+
+I also wanted the toolbar to fit an app that already server-renders. The children render unchanged on the server. The bar waits until the client mounts, then renders through a portal to `document.body`. It uses fixed positioning, so wrapping an app in `DevToolbar` doesn't add a layout box around its content. If the bar covers content you need to see, `DevToolbarInset` is available to reserve space.
+
+There is a specific React Server Components detail worth keeping in mind. The built entries carry a `"use client"` directive, but extension factories such as `metrics()` must still be called in a client module. A server component can render the toolbar; it can't call a function exported by a client module. The [SSR docs](https://github.com/nejcm/dev-toolbar/blob/main/docs/ssr.md) show the wrapper for that setup.
+
+Production inclusion is another explicit choice. `enabled={false}` renders the children without starting the toolbar, but the imported code remains in the bundle. To exclude those bytes, use a dynamic import behind a build-time condition. The [recipe builder](https://nejcm.github.io/dev-toolbar/recipes) generates setups for Vite and the Next.js app router, including that production gate and the extensions you select.
