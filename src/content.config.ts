@@ -21,8 +21,9 @@ const posts = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/posts' }),
   schema: z.object({
     title: z.string(),
-    description: z.string().optional(),
+    description: z.string(),
     date: z.coerce.date(),
+    updated: z.coerce.date().optional(),
     draft: z.boolean().default(false),
     hero: z.object({ scene: z.string().optional(), style: z.enum(['pixel', 'ascii']).optional() }).optional(),
   }),

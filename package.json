@@ -8,7 +8,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "check": "astro check",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "lighthouse": "bunx lighthouse http://localhost:4321/ --output=json --output=html --output-path=.reports/lighthouse --chrome-flags=\"--headless=new --no-sandbox\""
   },
   "dependencies": {
     "@astrojs/mdx": "^8.1.1",

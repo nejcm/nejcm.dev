@@ -1,7 +1,7 @@
 ---
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
-import { getPosts, isoDate } from '../../lib';
+import { getProjects, getPosts, isoDate } from '../../lib';
 import { mdxComponents } from '../../components/mdx';
 
 export async function getStaticPaths() {
@@ -10,9 +10,10 @@ export async function getStaticPaths() {
 
 const { p } = Astro.props as { p: CollectionEntry<'posts'> };
 const { Content } = await render(p);
+const project = (await getProjects()).find((x) => x.id === p.id);
 ---
 
-<Base title={p.data.title} description={p.data.description}>
+<Base title={p.data.title} description={p.data.description} article={{ published: p.data.date, modified: p.data.updated }}>
   <article class="panel">
     <canvas class="post-hero" aria-hidden="true" data-slug={p.id} data-scene={p.data.hero?.scene} data-style={p.data.hero?.style ?? 'pixel'}></canvas>
     <div class="post-bar-slot">
@@ -25,6 +26,8 @@ const { Content } = await render(p);
       <p class="kicker"><a class="navlink" href="/writing">← Writing</a></p>
       <h1 class="page-title">{p.data.title}</h1>
       <time class="kicker" datetime={isoDate(p.data.date)}>{isoDate(p.data.date)}</time>
+      {p.data.updated && <time class="kicker" datetime={isoDate(p.data.updated)}>Updated {isoDate(p.data.updated)}</time>}
+      {project && <p class="kicker"><a class="navlink" href={`/projects/${p.id}`}>View the {project.data.title} project →</a></p>}
     </header>
     <div class="prose"><Content components={mdxComponents} /></div>
   </article>

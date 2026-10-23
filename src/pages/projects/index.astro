@@ -6,9 +6,9 @@ import { getProjects } from '../../lib';
 const projects = await getProjects();
 ---
 
-<Base title="Projects">
+<Base title="Projects" description="Open-source tools and apps: a React dev toolbar, GitHub Actions, AI config tooling, and local-first products.">
   <section class="panel" aria-labelledby="h">
     <div class="panel-head"><h1 id="h" class="page-title">Projects</h1></div>
-    <ProjectCards projects={projects} />
+    <ProjectCards projects={projects} level={2} />
   </section>
 </Base>

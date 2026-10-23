@@ -1,7 +1,8 @@
 ---
 import type { CollectionEntry } from 'astro:content';
 
-const { projects } = Astro.props as { projects: CollectionEntry<'projects'>[] };
+const { projects, level = 3 } = Astro.props as { projects: CollectionEntry<'projects'>[]; level?: 2 | 3 };
+const H = `h${level}` as 'h2' | 'h3';
 ---
 
 <div class="cards">
@@ -9,7 +10,7 @@ const { projects } = Astro.props as { projects: CollectionEntry<'projects'>[] };
     projects.map((p) => (
       <a class="card" href={`/projects/${p.id}`}>
         <div class="card-top">
-          <h3 class="card-title">{p.data.title}</h3>
+          <H class="card-title">{p.data.title}</H>
           <span class="card-arrow" aria-hidden="true">↗</span>
         </div>
         <p>{p.data.description}</p>
