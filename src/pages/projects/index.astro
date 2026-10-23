@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProjectCards from '../../components/ProjectCards.astro';
+import { getProjects } from '../../lib';
+
+const projects = await getProjects();
+---
+
+<Base title="Projects">
+  <section class="panel" aria-labelledby="h">
+    <div class="panel-head"><h1 id="h" class="page-title">Projects</h1></div>
+    <ProjectCards projects={projects} />
+  </section>
+</Base>

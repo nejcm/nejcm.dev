@@ -1,0 +1,55 @@
+---
+import Base from '../layouts/Base.astro';
+import ProjectCards from '../components/ProjectCards.astro';
+import PostRows from '../components/PostRows.astro';
+import { site } from '../site';
+import { getPosts, getProjects } from '../lib';
+
+const projects = (await getProjects()).filter((p) => p.data.featured).slice(0, 4);
+const posts = (await getPosts()).slice(0, 4);
+const links = [...site.links, { label: 'Email', href: `mailto:${site.email}` }];
+---
+
+<Base>
+  <section class="panel pad hero" aria-labelledby="hi">
+    <p class="kicker">~/home</p>
+    <h1 id="hi">Hi, I'm {site.name}.</h1>
+    <p class="lede">{site.bio}</p>
+    <div class="meta">
+      <span>{site.location}</span>
+      <span>{site.role}</span>
+    </div>
+    <div class="links">
+      {
+        links.map((l) => (
+          <a href={l.href} rel={l.href.startsWith('http') ? 'me noopener' : undefined}>
+            {l.label} <span aria-hidden="true">↗</span>
+            {l.href.startsWith('http') && <span class="sr-only">(opens external site)</span>}
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="panel" id="projects" aria-labelledby="projects-h">
+    <div class="panel-head">
+      <h2 id="projects-h">Projects</h2>
+      <a class="navlink" href="/projects">All projects →</a>
+    </div>
+    <ProjectCards projects={projects} />
+  </section>
+
+  <section class="panel" id="writing" aria-labelledby="writing-h">
+    <div class="panel-head">
+      <h2 id="writing-h">Writing</h2>
+      <a class="navlink" href="/writing">All posts →</a>
+    </div>
+    <PostRows posts={posts} />
+  </section>
+
+  <section class="panel pad contact" id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Let's connect and collaborate.</h2>
+    <p>Have an idea, a role, or just want to say hi? My inbox is open.</p>
+    <div><a class="button" href={`mailto:${site.email}`}>{site.email}</a></div>
+  </section>
+</Base>

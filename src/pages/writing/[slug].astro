@@ -1,0 +1,23 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getPosts, isoDate } from '../../lib';
+
+export async function getStaticPaths() {
+  return (await getPosts()).map((p) => ({ params: { slug: p.id }, props: { p } }));
+}
+
+const { p } = Astro.props as { p: CollectionEntry<'posts'> };
+const { Content } = await render(p);
+---
+
+<Base title={p.data.title} description={p.data.description}>
+  <article class="panel">
+    <header class="panel-head pad">
+      <p class="kicker"><a class="navlink" href="/writing">← Writing</a></p>
+      <h1 class="page-title">{p.data.title}</h1>
+      <time class="kicker" datetime={isoDate(p.data.date)}>{isoDate(p.data.date)}</time>
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+</Base>

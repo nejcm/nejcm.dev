@@ -1,0 +1,14 @@
+---
+import Base from '../../layouts/Base.astro';
+import PostRows from '../../components/PostRows.astro';
+import { getPosts } from '../../lib';
+
+const posts = await getPosts();
+---
+
+<Base title="Writing">
+  <section class="panel" aria-labelledby="h">
+    <div class="panel-head"><h1 id="h" class="page-title">Writing</h1></div>
+    <PostRows posts={posts} />
+  </section>
+</Base>

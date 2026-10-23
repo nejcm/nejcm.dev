@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { isoDate } from '../lib';
+
+const { posts } = Astro.props as { posts: CollectionEntry<'posts'>[] };
+---
+
+<ul class="rows">
+  {
+    posts.map((p) => (
+      <li>
+        <a class="row" href={`/writing/${p.id}`}>
+          <time datetime={isoDate(p.data.date)}>{isoDate(p.data.date)}</time>
+          <span class="row-title">{p.data.title}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

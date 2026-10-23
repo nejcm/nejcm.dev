@@ -1,0 +1,22 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+const { projects } = Astro.props as { projects: CollectionEntry<'projects'>[] };
+---
+
+<div class="cards">
+  {
+    projects.map((p) => (
+      <a class="card" href={`/projects/${p.id}`}>
+        <div class="card-top">
+          <h3 class="card-title">{p.data.title}</h3>
+          <span class="card-arrow" aria-hidden="true">↗</span>
+        </div>
+        <p>{p.data.description}</p>
+        <ul class="tags" aria-label="Tech">
+          {p.data.tags.map((t) => <li>{t}</li>)}
+        </ul>
+      </a>
+    ))
+  }
+</div>

@@ -1,0 +1,40 @@
+---
+import { render, type CollectionEntry } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getProjects } from '../../lib';
+
+export async function getStaticPaths() {
+  return (await getProjects()).map((p) => ({ params: { slug: p.id }, props: { p } }));
+}
+
+const { p } = Astro.props as { p: CollectionEntry<'projects'> };
+const { Content } = await render(p);
+const links = [
+  p.data.url && { label: 'Live', href: p.data.url },
+  p.data.repo && { label: 'Source', href: p.data.repo },
+].filter(Boolean) as { label: string; href: string }[];
+---
+
+<Base title={p.data.title} description={p.data.description}>
+  <article class="panel">
+    <header class="panel-head pad">
+      <p class="kicker"><a class="navlink" href="/projects">← Projects</a></p>
+      <h1 class="page-title">{p.data.title}</h1>
+      <p class="lede">{p.data.description}</p>
+      <ul class="tags" aria-label="Tech">{p.data.tags.map((t) => <li>{t}</li>)}</ul>
+      {
+        links.length > 0 && (
+          <div class="links">
+            {links.map((l) => (
+              <a href={l.href} rel="noopener">
+                {l.label} <span aria-hidden="true">↗</span>
+                <span class="sr-only">(opens external site)</span>
+              </a>
+            ))}
+          </div>
+        )
+      }
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+</Base>
