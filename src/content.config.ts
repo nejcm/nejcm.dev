@@ -22,6 +22,7 @@ const posts = defineCollection({
     description: z.string().optional(),
     date: z.coerce.date(),
     draft: z.boolean().default(false),
+    hero: z.object({ scene: z.string().optional(), style: z.enum(['pixel', 'ascii']).optional() }).optional(),
   }),
 });
 

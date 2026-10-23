@@ -13,6 +13,7 @@ const { Content } = await render(p);
 
 <Base title={p.data.title} description={p.data.description}>
   <article class="panel">
+    <canvas class="hero" aria-hidden="true" data-slug={p.id} data-scene={p.data.hero?.scene} data-style={p.data.hero?.style ?? 'pixel'}></canvas>
     <header class="panel-head pad">
       <p class="kicker"><a class="navlink" href="/writing">← Writing</a></p>
       <h1 class="page-title">{p.data.title}</h1>
@@ -21,3 +22,7 @@ const { Content } = await render(p);
     <div class="prose"><Content /></div>
   </article>
 </Base>
+
+<script>
+  import '../../scripts/hero/hero';
+</script>
