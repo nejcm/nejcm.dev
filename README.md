@@ -20,4 +20,16 @@ bun run preview  # serve dist/
 - Add a post: create `src/content/posts/<slug>.mdx` with `title`, `date` (YYYY-MM-DD), optional `description`, `draft`.
   Home shows the 4 latest non-draft posts.
 
+### MDX components
+
+Available in every post without imports (`src/components/mdx/`):
+
+- `<RepoCard repo="owner/name" description="…" language="TS" />`
+- `<LinkCard href="…" title="…" description="…" kind="docs|demo|link" />`
+- `<Callout type="note|tip|warn" title="…">…</Callout>`
+- `<Figure src="/img.png|/clip.mp4" alt="…" caption="…" />`
+- `<Chart type="bar|line" title="…" unit="ms" data={[{ label: 'a', value: 1 }]} />`
+- `<Kbd>Ctrl</Kbd>`
+- `<Steps>` wrapping a markdown ordered list `</Steps>`
+
 Schemas live in `src/content.config.ts`. `design/` holds the original design export.

@@ -1,0 +1,30 @@
+---
+const { src, alt, caption } = Astro.props as { src: string; alt: string; caption?: string };
+const isVideo = /\.(mp4|webm)$/i.test(src);
+---
+
+<figure class="figure">
+  {
+    isVideo ? (
+      <>
+        <video class="motion" src={src} aria-label={alt} autoplay muted loop playsinline />
+        <video class="still" src={src} aria-label={alt} controls muted playsinline preload="metadata" />
+      </>
+    ) : (
+      <img src={src} alt={alt} loading="lazy" decoding="async" />
+    )
+  }
+  {caption && <figcaption>{caption}</figcaption>}
+</figure>
+
+<style>
+  .figure { margin-left: 0; margin-right: 0; }
+  img, video { display: block; width: 100%; height: auto; border: 1px solid var(--border); }
+  figcaption { margin-top: 8px; font-size: 13px; color: var(--muted); }
+  .still { display: none; }
+  /* shortcut: CSS swap keeps zero JS; the hidden autoplay copy may still fetch. */
+  @media (prefers-reduced-motion: reduce) {
+    .motion { display: none; }
+    .still { display: block; }
+  }
+</style>

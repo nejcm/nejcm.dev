@@ -2,6 +2,7 @@
 import { render, type CollectionEntry } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import { getPosts, isoDate } from '../../lib';
+import { mdxComponents } from '../../components/mdx';
 
 export async function getStaticPaths() {
   return (await getPosts()).map((p) => ({ params: { slug: p.id }, props: { p } }));
@@ -25,7 +26,7 @@ const { Content } = await render(p);
       <h1 class="page-title">{p.data.title}</h1>
       <time class="kicker" datetime={isoDate(p.data.date)}>{isoDate(p.data.date)}</time>
     </header>
-    <div class="prose"><Content /></div>
+    <div class="prose"><Content components={mdxComponents} /></div>
   </article>
 </Base>
 

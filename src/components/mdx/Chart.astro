@@ -1,0 +1,47 @@
+---
+type Point = { label: string; value: number };
+const { type = 'bar', data, title, unit = '' } = Astro.props as { type?: 'bar' | 'line'; data: Point[]; title?: string; unit?: string };
+
+const W = 400, H = 200, top = 16, bottom = 28, left = 8, right = 8;
+const max = Math.max(...data.map((d) => d.value), 0) || 1;
+const plotH = H - top - bottom;
+const step = (W - left - right) / data.length;
+const x = (i: number) => left + step * (i + 0.5);
+const y = (v: number) => top + plotH - (v / max) * plotH;
+const fmt = (v: number) => `${v.toLocaleString('en')}${unit}`;
+const summary = `${type === 'bar' ? 'Bar' : 'Line'} chart${title ? ` of ${title}` : ''}: ${data.map((d) => `${d.label} ${fmt(d.value)}`).join(', ')}`;
+---
+
+<figure class="chart">
+  {title && <figcaption class="chart-title">{title}</figcaption>}
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={summary}>
+    <line class="axis" x1={left} x2={W - right} y1={top + plotH} y2={top + plotH} />
+    {
+      type === 'bar'
+        ? data.map((d, i) => <rect class="bar" x={x(i) - step * 0.3} width={step * 0.6} y={y(d.value)} height={top + plotH - y(d.value)} />)
+        : [
+            <polyline class="line" points={data.map((d, i) => `${x(i)},${y(d.value)}`).join(' ')} />,
+            ...data.map((d, i) => <circle class="dot" cx={x(i)} cy={y(d.value)} r="3" />),
+          ]
+    }
+    {data.map((d, i) => <text class="value" x={x(i)} y={y(d.value) - 9}>{fmt(d.value)}</text>)}
+    {data.map((d, i) => <text class="label" x={x(i)} y={H - 8}>{d.label}</text>)}
+  </svg>
+  <table class="sr-only">
+    {title && <caption>{title}</caption>}
+    <thead><tr><th scope="col">Label</th><th scope="col">Value</th></tr></thead>
+    <tbody>{data.map((d) => <tr><th scope="row">{d.label}</th><td>{fmt(d.value)}</td></tr>)}</tbody>
+  </table>
+</figure>
+
+<style>
+  .chart { margin-left: 0; margin-right: 0; border: 1px solid var(--border); padding: 16px; color: var(--text-2); position: relative; }
+  .chart-title { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+  svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .axis { stroke: var(--border); }
+  .bar { fill: var(--h7); }
+  .line { fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
+  .dot { fill: var(--panel); stroke: currentColor; stroke-width: 2; }
+  text { font-family: var(--mono); font-size: 14px; text-anchor: middle; fill: var(--text-3); }
+  .label { fill: var(--muted); }
+</style>

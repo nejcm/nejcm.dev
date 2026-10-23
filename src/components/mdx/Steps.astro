@@ -1,0 +1,12 @@
+<div class="steps"><slot /></div>
+
+<style>
+  .steps :global(ol) { list-style: none; padding: 0; counter-reset: step; }
+  .steps :global(ol > li) { counter-increment: step; position: relative; padding-left: 44px; min-height: 28px; }
+  .steps :global(ol > li + li) { margin-top: 14px; }
+  .steps :global(ol > li)::before {
+    content: counter(step, decimal-leading-zero); position: absolute; left: 0; top: 0;
+    width: 30px; line-height: 24px; text-align: center; border: 1px solid var(--border);
+    font-family: var(--mono); font-size: 12px; color: var(--text-3);
+  }
+</style>

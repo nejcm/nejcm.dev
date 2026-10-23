@@ -1,0 +1,29 @@
+---
+const { href, title, description, mono = false } = Astro.props as { href: string; title: string; description?: string; mono?: boolean };
+---
+
+<a class="mdx-card" href={href} target="_blank" rel="noopener noreferrer">
+  <span class="mdx-card-icon" aria-hidden="true"><slot /></span>
+  <span class="mdx-card-body">
+    <span class:list={['mdx-card-title', { mono }]}>{title}</span>
+    {description && <span class="mdx-card-desc">{description}</span>}
+    <slot name="meta" />
+  </span>
+  <span class="card-arrow" aria-hidden="true">↗</span>
+  <span class="sr-only">(opens in new tab)</span>
+</a>
+
+<style>
+  .mdx-card {
+    display: flex; align-items: flex-start; gap: 14px; padding: 16px; border: 1px solid var(--border);
+    background: var(--panel); color: var(--text); text-decoration: none;
+  }
+  .mdx-card:hover { border-color: var(--muted); }
+  .mdx-card:hover .card-arrow { transform: translate(2px, -2px); }
+  .mdx-card-icon { flex: none; display: grid; place-items: center; width: 36px; height: 36px; border: 1px solid var(--border); color: var(--text-2); }
+  .mdx-card-icon :global(svg) { width: 18px; height: 18px; }
+  .mdx-card-body { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+  .mdx-card-title { font-weight: 600; overflow-wrap: anywhere; }
+  .mono { font-family: var(--mono); font-weight: 500; font-size: 15px; }
+  .mdx-card-desc { color: var(--text-3); font-size: 14px; line-height: 1.5; }
+</style>

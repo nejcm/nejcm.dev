@@ -11,6 +11,8 @@ I wanted a dev toolbar after reading about the one Linear uses inside its app. I
 
 Their [StyleX migration post](https://linear.app/now/styling-linear-for-the-future-stylex) has another example. Their performance toolbar shows a styled-components CSS rule count for the current page. That's a tool specific to a piece of work, useful while that work is happening. It made me want somewhere to put tools like that in my own apps.
 
+<RepoCard repo="nejcm/dev-toolbar" description="React developer toolbar with a small shell and opt-in tools." language="TypeScript" />
+
 I wanted to build a generic version that other developers could drop into their apps too. That became [dev-toolbar](https://github.com/nejcm/dev-toolbar), a React toolbar that hosts tools you choose. The part I wanted to share was the bar, the panels, and the wiring around them. The tools themselves need to depend on the application.
 
 A feature flag control is a good example of that boundary. The toolbar can display a flag and let you override it, but your app knows where flags come from and how an override changes its behavior. I don't want adding a toolbar to mean adopting another flag service or replacing a tool you already use.
@@ -20,6 +22,8 @@ The package is a shell. It handles ordering, overflow on narrow viewports, one o
 Even the command menu is an extension. Core collects commands; the menu provides a way to find and run them. I like that separation because it leaves room for an app that already has a command palette. You shouldn't need two just to use the toolbar.
 
 The [docs site](https://nejcm.github.io/dev-toolbar/) shows a starting setup with environment information and metrics. You create the extensions once, outside render, and pass the array to `DevToolbar`. Adding another tool means importing its factory and adding the result to that array. There isn't a preset collection you have to accept first.
+
+<LinkCard href="https://nejcm.github.io/dev-toolbar/" title="dev-toolbar docs" description="Setup, extensions, and the extension contract." kind="docs" />
 
 ## Bring your own tools
 
