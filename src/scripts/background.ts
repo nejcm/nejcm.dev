@@ -17,14 +17,18 @@ function hash(n: number) {
 
 let cols = 0;
 let rows = 0;
+let pitch = 18;
 let cells: HTMLDivElement[] = [];
 let levels: number[] = [];
 let active = new Map<number, number>();
 
 function build() {
-  const c = Math.min(160, Math.ceil(innerWidth / 18) + 1);
-  const r = Math.min(160, Math.ceil(innerHeight / 18) + 1);
-  if (c === cols && r === rows) return;
+  // Grow cells on huge screens so the grid stays under ~25.6k nodes.
+  const p = Math.max(18, Math.ceil(Math.sqrt((innerWidth * innerHeight) / 25600)));
+  const c = Math.ceil(innerWidth / p) + 1;
+  const r = Math.ceil(innerHeight / p) + 1;
+  if (c === cols && r === rows && p === pitch) return;
+  pitch = p;
   cols = c;
   rows = r;
   active = new Map();
@@ -42,7 +46,8 @@ function build() {
       frag.append(el);
     }
   }
-  grid.style.gridTemplateColumns = `repeat(${cols}, 14px)`;
+  grid.style.setProperty('--cell', `${pitch - 4}px`);
+  grid.style.gridTemplateColumns = `repeat(${cols}, var(--cell))`;
   grid.replaceChildren(frag);
   cells = [...grid.children] as HTMLDivElement[];
 }
@@ -55,8 +60,8 @@ function paint() {
   raf = 0;
   const next = new Map<number, number>();
   if (mx !== null) {
-    const fc = (mx - 7) / 18;
-    const fr = (my - 7) / 18;
+    const fc = (mx - (pitch - 4) / 2) / pitch;
+    const fr = (my - (pitch - 4) / 2) / pitch;
     for (let r = Math.max(0, Math.floor(fr - R)); r <= Math.min(rows - 1, Math.ceil(fr + R)); r++) {
       for (let c = Math.max(0, Math.floor(fc - R)); c <= Math.min(cols - 1, Math.ceil(fc + R)); c++) {
         const d = Math.hypot(c - fc, r - fr);
@@ -77,7 +82,7 @@ function paint() {
   });
   active.forEach((_, idx) => {
     if (next.has(idx)) return;
-    cells[idx].style.transition = `background-color ${TRAIL}ms cubic-bezier(.3,0,.2,1)`;
+    cells[idx].style.transition = reduced.matches ? "none" : `background-color ${TRAIL}ms cubic-bezier(.3,0,.2,1)`;
     cells[idx].style.backgroundColor = shade(levels[idx]);
   });
   active = next;
@@ -89,14 +94,16 @@ const schedule = () => {
 
 build();
 addEventListener('resize', build);
-if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-  addEventListener('pointermove', (e) => {
-    mx = e.clientX;
-    my = e.clientY;
-    schedule();
-  });
-  document.documentElement.addEventListener('pointerleave', () => {
-    mx = null;
-    schedule();
-  });
-}
+const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+const clear = () => {
+  mx = null;
+  schedule();
+};
+addEventListener('pointermove', (e) => {
+  if (reduced.matches) return;
+  mx = e.clientX;
+  my = e.clientY;
+  schedule();
+});
+document.documentElement.addEventListener('pointerleave', clear);
+reduced.addEventListener('change', clear);
