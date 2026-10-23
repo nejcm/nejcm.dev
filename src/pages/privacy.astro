@@ -1,0 +1,35 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site';
+---
+
+<Base title="Privacy Policy" description={`Privacy policy for ${site.name}'s website, software projects, and apps.`}>
+  <article class="panel">
+    <header class="panel-head pad">
+      <h1 class="page-title">Privacy Policy</h1>
+      <p class="lede">Effective date: <time datetime="2026-10-23">2026-10-23</time></p>
+    </header>
+    <div class="prose">
+      <p>This policy covers {site.name}'s website, software projects, and apps. A project's own privacy notice explains any project-specific practices and takes priority for that project.</p>
+
+      <h2>Data collected</h2>
+      <p>By default, no personal data is collected by the software unless a project states otherwise. The website's hosting provider may process technical logs, such as IP addresses, requested pages, and access times, to deliver and secure the site.</p>
+      <p>If you contact {site.name}, your email address and message are used to respond to you.</p>
+
+      <h2>Third-party services</h2>
+      <p>Hosting, email, and any services identified by a project may process data under their own privacy policies. External links lead to services with their own privacy practices.</p>
+
+      <h2>Cookies and local storage</h2>
+      <p>This website does not set cookies. It stores your theme preference in your browser's local storage. You can remove it by clearing the site's stored data in your browser. Individual projects explain any cookies or other storage they use.</p>
+
+      <h2>Children</h2>
+      <p>The website and projects are not directed at children under 13. If you believe a child has provided personal data, please get in touch so it can be addressed.</p>
+
+      <h2>Changes</h2>
+      <p>This policy may change as the website or projects change. Updates will appear here with a revised effective date.</p>
+
+      <h2>Contact</h2>
+      <p>For privacy questions or requests about personal data, contact {site.name} at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    </div>
+  </article>
+</Base>

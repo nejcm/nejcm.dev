@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../site';
+---
+
+<Base title="Terms of Use" description={`Terms of use for ${site.name}'s website, software projects, and apps.`}>
+  <article class="panel">
+    <header class="panel-head pad">
+      <h1 class="page-title">Terms of Use</h1>
+      <p class="lede">Effective date: <time datetime="2026-10-23">2026-10-23</time></p>
+    </header>
+    <div class="prose">
+      <p>These terms cover your use of {site.name}'s website, software projects, and apps. By using them, you agree to these terms. If you disagree, please stop using them.</p>
+
+      <h2>Licenses</h2>
+      <p>Each project's license or separate terms govern your use of that project and take priority where they differ from these terms. Public availability alone does not grant permission to copy, modify, or redistribute software or website content; check the applicable license.</p>
+
+      <h2>Acceptable use</h2>
+      <p>Use the website and projects lawfully. Do not infringe others' rights, distribute malware, disrupt services, or access systems or data without permission.</p>
+
+      <h2>No warranty</h2>
+      <p>To the extent allowed by law and subject to any applicable project license, the website and projects are provided “as is” and “as available,” without warranties, including merchantability, fitness for a particular purpose, or non-infringement. Availability, accuracy, security, and freedom from errors are not guaranteed.</p>
+
+      <h2>Limitation of liability</h2>
+      <p>To the extent allowed by law and subject to any applicable project license, {site.name} is not liable for losses or damages arising from use of, or inability to use, the website or projects, including lost data, lost profits, or service interruptions. Nothing in these terms excludes liability or rights that the law does not allow to be excluded.</p>
+
+      <h2>Third-party links and services</h2>
+      <p>Links and integrations may lead to third-party services. {site.name} does not control their content or operation. Their own terms and privacy policies apply.</p>
+
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of [Country], subject to any mandatory protections that apply where you live.</p>
+
+      <h2>Changes</h2>
+      <p>These terms may change as the website or projects change. Updates will appear here with a revised effective date. Review the current terms when you use the website or projects.</p>
+
+      <h2>Contact</h2>
+      <p>For questions about these terms, contact {site.name} at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    </div>
+  </article>
+</Base>
