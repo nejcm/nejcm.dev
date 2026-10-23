@@ -14,10 +14,10 @@ import { site } from '../site';
 
       <h2>Data collected</h2>
       <p>By default, no personal data is collected by the software unless a project states otherwise. The website's hosting provider may process technical logs, such as IP addresses, requested pages, and access times, to deliver and secure the site.</p>
-      <p>If you contact {site.name}, your email address and message are used to respond to you.</p>
+      <p>If you contact {site.name}, the details you share are used only to respond to you.</p>
 
       <h2>Third-party services</h2>
-      <p>Hosting, email, and any services identified by a project may process data under their own privacy policies. External links lead to services with their own privacy practices.</p>
+      <p>Hosting and any services identified by a project may process data under their own privacy policies. External links lead to services with their own privacy practices.</p>
 
       <h2>Cookies and local storage</h2>
       <p>This website does not set cookies. It stores your theme preference in your browser's local storage. You can remove it by clearing the site's stored data in your browser. Individual projects explain any cookies or other storage they use.</p>
@@ -29,7 +29,7 @@ import { site } from '../site';
       <p>This policy may change as the website or projects change. Updates will appear here with a revised effective date.</p>
 
       <h2>Contact</h2>
-      <p>For privacy questions or requests about personal data, contact {site.name} at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+      <p>For privacy questions or requests about personal data, contact {site.name} at <a href={site.links[0].href}>GitHub</a>.</p>
     </div>
   </article>
 </Base>

@@ -48,7 +48,7 @@ const posts = (await getPosts()).slice(0, 4);
 
   <section class="panel pad contact" id="contact" aria-labelledby="contact-h">
     <h2 id="contact-h">Let's connect and collaborate.</h2>
-    <p>Have an idea, a role, or just want to say hi? My inbox is open.</p>
-    <div><a class="button" href={`mailto:${site.email}`}>{site.email}</a></div>
+    <p>Have an idea, a role, or just want to say hi? Find me on GitHub.</p>
+    <div><a class="button" href={site.links[0].href} rel="me noopener">github.com/nejcm</a></div>
   </section>
 </Base>
