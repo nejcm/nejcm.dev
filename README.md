@@ -14,9 +14,9 @@ bun run preview  # serve dist/
 
 ## Content
 
-- Site details (name, bio, location, role, email, links): `src/site.ts`.
+- Site details (name, bio, location, role, links): `src/site.ts`.
 - Add a project: create `src/content/projects/<slug>.mdx` with frontmatter
-  `title`, `description`, `tags`, optional `featured` (shown on home, max 4), `order`, `url`, `repo`.
+  `title`, `description`, `tags`, optional `featured` (shown on home, max 4), `order`, `url` (app), `repo`, `docs`, `example`.
 - Add a post: create `src/content/posts/<slug>.mdx` with `title`, `date` (YYYY-MM-DD), optional `description`, `draft`.
   Home shows the 4 latest non-draft posts.
 
@@ -33,3 +33,7 @@ Available in every post without imports (`src/components/mdx/`):
 - `<Steps>` wrapping a markdown ordered list `</Steps>`
 
 Schemas live in `src/content.config.ts`. `design/` holds the original design export.
+
+## License
+
+Code is [MIT](LICENSE). Posts and project write-ups in `src/content/` are © nejcm, all rights reserved.
