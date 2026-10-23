@@ -9,6 +9,8 @@ hero:
 
 I built [market-bot](https://github.com/nejcm/market-bot) to turn public market data into research I can inspect later. The output is a report with sources, saved evidence, and predictions that can eventually be checked against observations. That last part matters to me. A plausible explanation of a market move is easy to accept when there is no record of what it predicted beforehand.
 
+<RepoCard repo="nejcm/market-bot" description="Bun and TypeScript CLI that turns public market data into sourced research with measurable predictions." language="TypeScript" />
+
 The project is a Bun and TypeScript CLI. It collects equity or crypto data, passes evidence through model stages, and writes research artifacts to disk. Yahoo Finance supplies primary equity data; CoinGecko supplies primary crypto data. Other providers add evidence such as SEC filings, macro series, or options data. The persisted reports stay within a research-only boundary: they do not give buy or sell calls, position sizes, or execution instructions.
 
 I wanted the research to survive the process that produced it. Each run has a directory under `data/runs/<run-id>/`, with `report.json`, `report.md`, and the evidence and diagnostic artifacts for that run. Those files are canonical. The SQLite run index is a derived query layer, so an index problem does not make the saved research disappear.
@@ -29,4 +31,10 @@ Later, the `score` command resolves due predictions against public observations.
 
 The recent [forecasting design](https://github.com/nejcm/market-bot/blob/a5631a6da8/docs/adr/0003-forecasts-scoring-and-calibration.md) goes further and compares eligible model probabilities with a versioned forecast baseline. Missing baseline inputs leave a declared gap. There is also an explicit `not-yet-decidable` status when the comparison lacks enough evidence. I am building a way to measure these forecasts; that is not evidence that the model forecasts better.
 
-Missing data needs the same care as an accepted prediction. If a source refresh fails, stale cached content can remain in the raw audit record, but it does not become normalized current evidence. The report discloses the gap. That leaves a useful debugging distinction: I can check whether a conclusion lacked current inputs before changing the prompt. The project is still under active development, and its CLI, configuration, and output formats can change.
+<LinkCard href="https://github.com/nejcm/market-bot/tree/master/docs" title="market-bot docs" description="Architecture notes and decision records, including forecast scoring." kind="docs" />
+
+Missing data needs the same care as an accepted prediction. If a source refresh fails, stale cached content can remain in the raw audit record, but it does not become normalized current evidence. The report discloses the gap. That leaves a useful debugging distinction: I can check whether a conclusion lacked current inputs before changing the prompt.
+
+<Callout type="note">
+The project is still under active development, and its CLI, configuration, and output formats can change.
+</Callout>
