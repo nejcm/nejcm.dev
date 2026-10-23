@@ -136,11 +136,11 @@ h2 { font-size: 26px; letter-spacing: -0.01em; }
 .panel-head.pad { flex-direction: column; align-items: flex-start; }
 .card h3 { margin: 0; }
 
-.post-head { position: sticky; top: 0; z-index: 2; background: var(--panel); transition: padding 0.2s, gap 0.2s; }
-.post-head .page-title { transition: font-size 0.2s; }
-.post-head time { max-height: 2em; overflow: hidden; transition: max-height 0.2s, opacity 0.2s; }
-.post-head.stuck { flex-direction: row; align-items: center; justify-content: flex-start; gap: 12px; padding-block: 10px; }
-.post-head.stuck .page-title { font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.post-head.stuck time { max-height: 0; opacity: 0; }
-.post-head.stuck .back-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-@media (prefers-reduced-motion: reduce) { .post-head, .post-head * { transition: none; } }
+.post-bar-slot { position: sticky; top: 0; z-index: 2; height: 0; }
+.post-bar {
+  display: flex; align-items: center; gap: 12px; padding: 10px 20px; background: var(--panel); border-bottom: 1px solid var(--border);
+  transform: translateY(-100%); opacity: 0; visibility: hidden; transition: transform 0.2s, opacity 0.2s, visibility 0.2s;
+}
+.post-bar.shown { transform: none; opacity: 1; visibility: visible; }
+.post-bar-title { font-family: var(--sans); font-weight: 600; font-size: 18px; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (prefers-reduced-motion: reduce) { .post-bar { transition: none; } }

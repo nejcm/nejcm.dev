@@ -14,8 +14,14 @@ const { Content } = await render(p);
 <Base title={p.data.title} description={p.data.description}>
   <article class="panel">
     <canvas class="post-hero" aria-hidden="true" data-slug={p.id} data-scene={p.data.hero?.scene} data-style={p.data.hero?.style ?? 'pixel'}></canvas>
+    <div class="post-bar-slot">
+      <div class="post-bar" aria-hidden="true">
+        <a class="navlink" href="/writing" tabindex="-1">←</a>
+        <span class="post-bar-title">{p.data.title}</span>
+      </div>
+    </div>
     <header class="panel-head pad post-head">
-      <p class="kicker"><a class="navlink" href="/writing">←<span class="back-label"> Writing</span></a></p>
+      <p class="kicker"><a class="navlink" href="/writing">← Writing</a></p>
       <h1 class="page-title">{p.data.title}</h1>
       <time class="kicker" datetime={isoDate(p.data.date)}>{isoDate(p.data.date)}</time>
     </header>
@@ -26,8 +32,8 @@ const { Content } = await render(p);
 <script>
   import '../../scripts/hero/hero';
 
-  const head = document.querySelector('.post-head')!;
-  new IntersectionObserver(([e]) => head.classList.toggle('stuck', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(
-    document.querySelector('.post-hero')!,
+  const bar = document.querySelector('.post-bar')!;
+  new IntersectionObserver(([e]) => bar.classList.toggle('shown', !e.isIntersecting && e.boundingClientRect.top < 0)).observe(
+    document.querySelector('.post-head')!,
   );
 </script>
