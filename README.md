@@ -32,7 +32,7 @@ Available in every post without imports (`src/components/mdx/`):
 - `<Kbd>Ctrl</Kbd>`
 - `<Steps>` wrapping a markdown ordered list `</Steps>`
 
-Schemas live in `src/content.config.ts`. `design/` holds the original design export.
+Schemas live in `src/content.config.ts`.
 
 ## License
 
