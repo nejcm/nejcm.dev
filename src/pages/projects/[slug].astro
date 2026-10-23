@@ -10,8 +10,10 @@ export async function getStaticPaths() {
 const { p } = Astro.props as { p: CollectionEntry<'projects'> };
 const { Content } = await render(p);
 const links = [
-  p.data.url && { label: 'Live', href: p.data.url },
-  p.data.repo && { label: 'Source', href: p.data.repo },
+  p.data.repo && { label: 'GitHub', href: p.data.repo },
+  p.data.docs && { label: 'Docs', href: p.data.docs },
+  p.data.example && { label: 'Example', href: p.data.example },
+  p.data.url && { label: 'App', href: p.data.url },
 ].filter(Boolean) as { label: string; href: string }[];
 ---
 
