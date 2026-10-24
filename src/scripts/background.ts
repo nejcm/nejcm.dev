@@ -94,6 +94,8 @@ const schedule = () => {
 
 build();
 addEventListener('resize', build);
+// Lingering inline transitions would make every touched cell animate on theme switch.
+grid.addEventListener('transitionend', (e) => ((e.target as HTMLElement).style.transition = ''));
 const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 const clear = () => {
   mx = null;

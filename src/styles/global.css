@@ -60,6 +60,7 @@ p { margin: 0; }
 .bg { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
 .bg-grid { position: absolute; left: 0; top: 0; display: grid; grid-auto-rows: var(--cell, 14px); gap: 4px; }
 .bg-grid > div { width: var(--cell, 14px); height: var(--cell, 14px); border-radius: 3px; }
+.theme-switching * { transition: none !important; }
 .content { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 40px; padding: 40px 16px 56px; }
 
 .panel { width: 100%; max-width: 760px; margin: 0 auto; background: var(--panel); border: 1px solid var(--border); }

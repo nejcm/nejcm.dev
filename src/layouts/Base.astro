@@ -111,7 +111,10 @@ const N = [1,0,0,0,1, 1,1,0,0,1, 1,0,1,0,1, 1,0,0,1,1, 1,0,0,0,1];
       const sync = () => btn.setAttribute('aria-pressed', String(root.dataset.theme === 'dark'));
       sync();
       btn.addEventListener('click', () => {
+        root.classList.add('theme-switching');
         root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+        void root.offsetWidth;
+        root.classList.remove('theme-switching');
         sync();
         try {
           localStorage.setItem('theme', root.dataset.theme);
